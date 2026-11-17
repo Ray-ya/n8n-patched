@@ -1,0 +1,44 @@
+{
+  "@context": "https://openvex.dev/ns/v0.2.0",
+  "@id": "https://github.com/Ray-ya/n8n-patched/vex/2026-11-18",
+  "author": "Ray Hsieh (Xiao R Security Remediation)",
+  "timestamp": "2026-11-18T04:45:00+08:00",
+  "version": 1,
+  "statements": [
+    {
+      "vulnerability": {
+        "name": "CVE-2023-54404",
+        "aliases": ["GHSA-mrhx-c7xc-m3w5"],
+        "description": "Zod Uncontrolled Resource Consumption via Unbounded Array, Set, and Map Validation"
+      },
+      "products": [
+        {
+          "@id": "pkg:npm/n8n@2.48.4-secfix.1",
+          "subcomponents": [
+            { "@id": "pkg:npm/zod@3.25.76" }
+          ]
+        }
+      ],
+      "status": "fixed",
+      "status_notes": "Backported upstream fix (colinhacks/zod commit a0ebf970f2d752e5f58527cd2942ff48be4f46bd) into zod@3.25.76 via pnpm patchedDependencies (patches/zod@3.25.76.patch) for both v3 (ZodArray/ZodSet) and v4 ($ZodArray/$ZodSet/$ZodMap) parse paths. Verified via PoC: 200,000 invalid elements against .max(2) fail fast in ~1.3ms with 1 too_big issue and zero element iteration. zod-v4 catalog upgraded to 4.6.7."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-93753",
+        "aliases": ["GHSA-gcqx-w48m-w2h4"],
+        "description": "Withdrawn Advisory: deepmerge mergeObject() allows prototype poisoning of returned objects"
+      },
+      "products": [
+        {
+          "@id": "pkg:npm/n8n@2.48.4-secfix.1",
+          "subcomponents": [
+            { "@id": "pkg:npm/deepmerge@4.3.1" }
+          ]
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "GitHub Advisory GHSA-gcqx-w48m-w2h4 has been officially withdrawn. As defense-in-depth, patches/deepmerge@4.3.1.patch additionally blocks __proto__, constructor, and prototype keys in propertyIsUnsafe()."
+    }
+  ]
+}

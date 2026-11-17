@@ -1,0 +1,180 @@
+diff --git a/v3/types.js b/v3/types.js
+--- a/v3/types.js
++++ b/v3/types.js
+@@ -1769,6 +1769,9 @@
+                     exact: true,
+                     message: def.exactLength.message,
+                 });
++                if (tooBig) {
++                    return INVALID;
++                }
+                 status.dirty();
+             }
+         }
+@@ -1795,7 +1798,7 @@
+                     exact: false,
+                     message: def.maxLength.message,
+                 });
+-                status.dirty();
++                return INVALID;
+             }
+         }
+         if (ctx.common.async) {
+@@ -2814,7 +2817,7 @@
+                     exact: false,
+                     message: def.maxSize.message,
+                 });
+-                status.dirty();
++                return INVALID;
+             }
+         }
+         const valueType = this._def.valueType;
+diff --git a/v3/types.cjs b/v3/types.cjs
+--- a/v3/types.cjs
++++ b/v3/types.cjs
+@@ -1790,6 +1790,9 @@
+                     exact: true,
+                     message: def.exactLength.message,
+                 });
++                if (tooBig) {
++                    return parseUtil_js_1.INVALID;
++                }
+                 status.dirty();
+             }
+         }
+@@ -1816,7 +1819,7 @@
+                     exact: false,
+                     message: def.maxLength.message,
+                 });
+-                status.dirty();
++                return parseUtil_js_1.INVALID;
+             }
+         }
+         if (ctx.common.async) {
+@@ -2843,7 +2846,7 @@
+                     exact: false,
+                     message: def.maxSize.message,
+                 });
+-                status.dirty();
++                return parseUtil_js_1.INVALID;
+             }
+         }
+         const valueType = this._def.valueType;
+diff --git a/v4/core/schemas.js b/v4/core/schemas.js
+--- a/v4/core/schemas.js
++++ b/v4/core/schemas.js
+@@ -613,6 +613,25 @@
+         return payload;
+     };
+ });
++function __cve202354404_checkMaxBound(inst, payload, n, ctx) {
++    if (ctx && ctx.skipChecks) return false;
++    const checks = inst._zod && inst._zod.def && inst._zod.def.checks;
++    if (!checks || !checks.length) return false;
++    for (const ch of checks) {
++        const d = ch && ch._zod && ch._zod.def;
++        if (!d || !/_(length|size)$|_equals$/.test(d.check)) break;
++        const max = d.maximum !== undefined ? d.maximum : (d.length !== undefined ? d.length : d.size);
++        if (typeof max === 'number' && max >= 0 && n > max) {
++            if (!d.when || d.when(payload)) {
++                const start = payload.issues.length;
++                ch._zod.check(payload);
++                if (payload.issues[start]) payload.issues[start].continue = false;
++                return true;
++            }
++        }
++    }
++    return false;
++}
+ function handleArrayResult(result, final, index) {
+     if (result.issues.length) {
+         final.issues.push(...util.prefixIssues(index, result.issues));
+@@ -630,6 +649,9 @@
+                 input,
+                 inst,
+             });
++            return payload;
++        }
++        if (__cve202354404_checkMaxBound(inst, payload, input.length, ctx)) {
+             return payload;
+         }
+         payload.value = Array(input.length);
+@@ -1256,6 +1278,9 @@
+             return payload;
+         }
+         const proms = [];
++        if (__cve202354404_checkMaxBound(inst, payload, input.size, ctx)) {
++            return payload;
++        }
+         payload.value = new Map();
+         for (const [key, value] of input) {
+             const keyResult = def.keyType._zod.run({ value: key, issues: [] }, ctx);
+@@ -1320,6 +1345,9 @@
+             return payload;
+         }
+         const proms = [];
++        if (__cve202354404_checkMaxBound(inst, payload, input.size, ctx)) {
++            return payload;
++        }
+         payload.value = new Set();
+         for (const item of input) {
+             const result = def.valueType._zod.run({ value: item, issues: [] }, ctx);
+diff --git a/v4/core/schemas.cjs b/v4/core/schemas.cjs
+--- a/v4/core/schemas.cjs
++++ b/v4/core/schemas.cjs
+@@ -644,6 +644,25 @@
+         return payload;
+     };
+ });
++function __cve202354404_checkMaxBound(inst, payload, n, ctx) {
++    if (ctx && ctx.skipChecks) return false;
++    const checks = inst._zod && inst._zod.def && inst._zod.def.checks;
++    if (!checks || !checks.length) return false;
++    for (const ch of checks) {
++        const d = ch && ch._zod && ch._zod.def;
++        if (!d || !/_(length|size)$|_equals$/.test(d.check)) break;
++        const max = d.maximum !== undefined ? d.maximum : (d.length !== undefined ? d.length : d.size);
++        if (typeof max === 'number' && max >= 0 && n > max) {
++            if (!d.when || d.when(payload)) {
++                const start = payload.issues.length;
++                ch._zod.check(payload);
++                if (payload.issues[start]) payload.issues[start].continue = false;
++                return true;
++            }
++        }
++    }
++    return false;
++}
+ function handleArrayResult(result, final, index) {
+     if (result.issues.length) {
+         final.issues.push(...util.prefixIssues(index, result.issues));
+@@ -661,6 +680,9 @@
+                 input,
+                 inst,
+             });
++            return payload;
++        }
++        if (__cve202354404_checkMaxBound(inst, payload, input.length, ctx)) {
+             return payload;
+         }
+         payload.value = Array(input.length);
+@@ -1287,6 +1309,9 @@
+             return payload;
+         }
+         const proms = [];
++        if (__cve202354404_checkMaxBound(inst, payload, input.size, ctx)) {
++            return payload;
++        }
+         payload.value = new Map();
+         for (const [key, value] of input) {
+             const keyResult = def.keyType._zod.run({ value: key, issues: [] }, ctx);
+@@ -1351,6 +1376,9 @@
+             return payload;
+         }
+         const proms = [];
++        if (__cve202354404_checkMaxBound(inst, payload, input.size, ctx)) {
++            return payload;
++        }
+         payload.value = new Set();
+         for (const item of input) {
+             const result = def.valueType._zod.run({ value: item, issues: [] }, ctx);

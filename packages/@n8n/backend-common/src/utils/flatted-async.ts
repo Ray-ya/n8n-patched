@@ -7,8 +7,7 @@
  */
 import { ensureError } from '@n8n/utils/errors/ensure-error';
 import { Readable } from 'stream';
-import { parser } from 'stream-json';
-import Asm from 'stream-json/Assembler';
+import type { Duplex } from 'stream';
 
 // 64 KB chunks — selected via benchmarks as the sweet spot for event-loop
 // responsiveness vs scheduling overhead (p95 lag ~4 ms at 50 MB payload).
@@ -117,6 +116,11 @@ function prepareFlatted(rawParsed: unknown[]): unknown[] {
  * via setImmediate, then resolves flatted references synchronously.
  */
 export async function parseFlattedAsync(flattedString: string): Promise<unknown> {
+	const [{ parserStream }, { default: Assembler }] = await Promise.all([
+		import('stream-json'),
+		import('stream-json/assembler.js'),
+	]);
+
 	return await new Promise((resolve, reject) => {
 		let offset = 0;
 		const readable = new Readable({
@@ -133,16 +137,16 @@ export async function parseFlattedAsync(flattedString: string): Promise<unknown>
 			},
 		});
 
-		const jsonParser = parser();
-		const asm = Asm.connectTo(jsonParser);
-
-		asm.on('done', (asmResult: { current: unknown[] }) => {
-			try {
-				const prepared = prepareFlatted(asmResult.current);
-				resolve(resolveFlatted(prepared));
-			} catch (e) {
-				reject(ensureError(e));
-			}
+		const jsonParser: Duplex = parserStream();
+		Assembler.connectTo<unknown[]>(jsonParser, {
+			onDone: (asmResult) => {
+				try {
+					const prepared = prepareFlatted(asmResult.current ?? []);
+					resolve(resolveFlatted(prepared));
+				} catch (e) {
+					reject(ensureError(e));
+				}
+			},
 		});
 
 		jsonParser.on('error', reject);

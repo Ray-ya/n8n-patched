@@ -42,6 +42,31 @@ minimumReleaseAgeExclude:
   # Security patch (Aikido) newer than the minimumReleaseAge window; allow it in.
   - '@xmldom/xmldom'
   - '@ai-sdk/provider-utils@5.0.70'
+  # CVE remediation security upgrades (2026-11)
+  - '@azure/*'
+  - '@hono/*'
+  - '@intlify/*'
+  - '@modelcontextprotocol/*'
+  - '@element-plus/*'
+  - 'body-parser'
+  - 'element-plus'
+  - 'fast-uri'
+  - 'fast-xml-parser'
+  - 'follow-redirects'
+  - 'glob'
+  - 'hono'
+  - 'ip-address'
+  - 'markdown-it'
+  - 'minimatch'
+  - 'nodemailer'
+  - 'qs'
+  - 'sanitize-html'
+  - 'socks'
+  - 'stream-json'
+  - 'toml'
+  - 'undici'
+  - 'vue-i18n'
+  - 'zod'
 
 packages:
   - packages/*
@@ -115,7 +140,7 @@ catalog:
   '@lezer/highlight': 1.2.3
   '@lezer/lr': 1.4.5
   '@modelcontextprotocol/ext-apps': 1.3.2
-  '@modelcontextprotocol/node': 2.0.0
+  '@modelcontextprotocol/node': 2.1.2
   '@modelcontextprotocol/sdk': 1.32.0
   '@modelcontextprotocol/server': 2.3.0
   '@mozilla/readability': ^0.6.0
@@ -242,7 +267,7 @@ catalog:
   lodash-es: 4.18.1
   lru-cache: 11.5.1
   luxon: 3.7.2
-  markdown-it: ^13.0.2
+  markdown-it: 14.3.3
   markdown-it-link-attributes: ^4.0.1
   mime-types: 3.0.2
   moment-timezone: 0.5.48
@@ -251,7 +276,7 @@ catalog:
   mysql2: 3.23.1
   nanoid: 3.3.18
   nock: 14.0.14
-  nodemailer: 10.0.14
+  nodemailer: 10.6.0
   openai: 6.46.0
   oracledb: 6.10.0
   oxlint: 1.78.0
@@ -265,16 +290,16 @@ catalog:
   posthog-node: 5.49.1
   prettier: 3.6.2
   proxy-from-env: ^1.1.0
-  qs: 6.16.0
+  qs: 6.17.1
   reflect-metadata: 0.2.2
   rimraf: 6.0.1
-  sanitize-html: 2.18.0
+  sanitize-html: 2.18.2
   sass-embedded: ^1.98.0
   semver: 7.7.3
   simple-git: 4.0.2
   source-map-support: 0.5.21
   ssh2: 1.15.0
-  stream-json: 1.9.1
+  stream-json: 3.9.0
   stylelint: ^16.23.0
   tar: 7.5.21
   testcontainers: ^11.13.0
@@ -328,13 +353,13 @@ catalogs:
     '@vue/tsconfig': ^0.7.0
     '@vueuse/core': ^14.3.0
     autoprefixer: ^10.4.19
-    element-plus: 2.4.3
+    element-plus: 2.14.8
     highlight.js: 11.12.0
     pinia: ^2.2.4
     unplugin-icons: ^23.0.1
     vite-svg-loader: 5.1.0
     vue: ^3.5.13
-    vue-i18n: ^11.4.4
+    vue-i18n: ^11.4.22
     vue-markdown-render: ^2.2.1
     vue-router: ^4.5.0
     vue-tsc: ^2.2.8
@@ -372,10 +397,10 @@ catalogs:
   undici-v6:
     undici: ^6.29.1
   undici-v7:
-    undici: ^7.30.1
+    undici: ^7.30.2
   # knip needs zod 4 while the default catalog pins zod 3.
   zod-v4:
-    zod: ^4.4.3
+    zod: ^4.6.7
 
 overrides:
   libphonenumber-js: npm:empty-npm-package@1.0.0
@@ -412,15 +437,15 @@ overrides:
   pdf-parse: 'catalog:'
   pdfjs-dist: 'catalog:'
   tmp: 0.2.7
-  nodemailer: 10.0.14
+  nodemailer: 10.6.0
   validator: 'catalog:'
   zod: 3.25.76
   # Scoped to knip so the repo-wide zod 3 pin stays for everything else.
   'knip>zod': catalog:zod-v4
   js-yaml: 4.3.2
   katex: 0.18.2
-  body-parser: 2.3.0
-  glob@10: 10.5.0
+  body-parser: 2.4.0
+  'glob@>=9 <14.0.2': 14.0.6
   glob@7: 7.2.3
   jws@3: 3.2.2
   jws@4: 4.0.1
@@ -436,10 +461,9 @@ overrides:
   bn.js@5: 5.2.3
   lodash: 4.18.1
   minimatch@<=5.1.8: 5.1.8
-  minimatch@9.0.1: 9.0.9
-  minimatch@10: 10.2.3
-  '@hono/node-server': 1.19.15
-  follow-redirects: 1.16.1
+  'minimatch@>=7 <11.0.1': 11.0.9
+  '@hono/node-server': 2.1.9
+  follow-redirects: 1.16.3
   express-rate-limit: 8.2.2
   underscore: 1.13.8
   flatted: 3.4.2
@@ -454,16 +478,17 @@ overrides:
   yaml@<=2.8.3: 2.8.3
   axios: 'catalog:'
   fast-xml-builder: 1.2.1
-  fast-xml-parser: 5.7.2
+  fast-xml-parser: 5.12.1
   postcss@<=8.5.22: 8.5.23
   '@anthropic-ai/sdk@<=0.91.1': 0.91.1
   uuid@<=13.0.1: 13.0.1
-  fast-uri: 3.1.8
+  fast-uri: 3.1.9
   cjs-module-lexer@<2.2.0: 2.2.0
   protobufjs: 7.6.5
   shell-quote: 1.11.0
   adm-zip: 0.6.1
-  ip-address@10: 10.7.1
+  'socks@<2.8.9': 2.8.9
+  'ip-address@<10.7.4': 10.7.6
   brace-expansion@5: 5.0.12
   '@tootallnate/once@2': 2.0.1
   '@vue/server-renderer@3.5.26': 3.5.42
@@ -474,7 +499,7 @@ overrides:
   '@daytona/sdk@0.205.1>@aws-sdk/lib-storage': 3.808.0
   '@daytona/sdk@0.205.1>@opentelemetry/sdk-trace-base': 'catalog:'
   langsmith: 0.6.0
-  hono: 4.13.11
+  hono: 4.13.19
   '@tiptap/core': 'catalog:'
   pg: 'catalog:'
   file-type: 'catalog:'
@@ -506,14 +531,23 @@ overrides:
   'pdf-parse>@napi-rs/canvas': 'catalog:'
   # The @icetee/ftp patch replaces xregexp with native RegExp.
   '@icetee/ftp>xregexp': npm:empty-npm-package@1.0.0
-  'toml@<4.2.0': 4.2.0
+  'toml@<5.0.1': 5.0.1
+  # Additional CVE remediation overrides (2026-11)
+  '@azure/msal-node@>=5.0.0 <7.1.0': 7.2.2
+  '@azure/msal-node@>=3.0.0 <3.8.10': 3.8.10
+  '@intlify/core-base@<11.4.22': 11.4.22
+  '@intlify/core@<11.4.22': 11.4.22
+  '@intlify/shared@<11.4.22': 11.4.22
+  '@intlify/vue-i18n-core@<11.4.22': 11.4.22
+  'markdown-it@<14.3.3': 14.3.3
+  'sanitize-html@<2.18.2': 2.18.2
+  '@modelcontextprotocol/node@<2.1.2': 2.1.2
   # Keep the copies that langchain brings in on the catalog version.
   '@langchain/langgraph': 'catalog:'
   '@langchain/langgraph-checkpoint': 'catalog:'
 
 patchedDependencies:
   bull@4.16.4: patches/bull@4.16.4.patch
-  element-plus@2.4.3: patches/element-plus@2.4.3.patch
   pkce-challenge@5.0.0: patches/pkce-challenge@5.0.0.patch
   '@types/express-serve-static-core@5.0.6': patches/@types__express-serve-static-core@5.0.6.patch
   '@types/ws@8.18.1': patches/@types__ws@8.18.1.patch
@@ -540,6 +574,9 @@ patchedDependencies:
   '@google/generative-ai@0.24.0': patches/@google__generative-ai@0.24.0.patch
   '@langchain/google-genai@2.1.24': patches/@langchain__google-genai@2.1.24.patch
   weaviate-client@3.9.0: patches/weaviate-client@3.9.0.patch
+  # Security patches (2026-11 CVE remediation)
+  deepmerge@4.3.1: patches/deepmerge@4.3.1.patch
+  zod@3.25.76: patches/zod@3.25.76.patch
 
 allowBuilds:
   '@biomejs/biome': false

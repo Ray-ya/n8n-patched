@@ -10,7 +10,7 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionTypes, deepCopy } from 'n8n-workflow';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
-import { Converter } from 'showdown';
+import { convertMarkdownToHtml } from './markdownToHtml';
 
 export class Markdown implements INodeType {
 	description: INodeTypeDescription = {
@@ -593,12 +593,9 @@ export class Markdown implements INodeType {
 				if (mode === 'markdownToHtml') {
 					const markdown = this.getNodeParameter('markdown', i) as string;
 					const destinationKey = this.getNodeParameter('destinationKey', i) as string;
-					const options = this.getNodeParameter('options', i);
+					const options = this.getNodeParameter('options', i) as IDataObject;
 
-					const converter = new Converter();
-
-					Object.keys(options).forEach((key) => converter.setOption(key, options[key]));
-					const htmlFromMarkdown = converter.makeHtml(markdown);
+					const htmlFromMarkdown = convertMarkdownToHtml(markdown, options);
 
 					const newItem = deepCopy(items[i].json);
 					set(newItem, destinationKey, htmlFromMarkdown);

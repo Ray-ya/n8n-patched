@@ -40,7 +40,6 @@
   "devDependencies": {
     "@n8n/oxlint-config": "workspace:*",
     "@n8n/typescript-config": "workspace:*",
-    "@types/stream-json": "1.7.8",
     "@types/yargs-parser": "21.0.0",
     "@n8n/vitest-config": "workspace:*",
     "@vitest/coverage-v8": "catalog:",

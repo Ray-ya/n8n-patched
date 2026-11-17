@@ -1,0 +1,45 @@
+# Production-ready Dockerfile for n8n 2.48.4 (CVE-2026-11 Security Patched)
+# Usage (from pre-built compiled bundle):
+#   tar -xzf n8n-2.48.4-secfix-compiled-bundle.tar.gz
+#   docker build -f Dockerfile.patched -t n8n-patched:2.48.4-secfix.1 .
+#   docker run -it --rm -p 5678:5678 n8n-patched:2.48.4-secfix.1
+
+FROM node:24-alpine
+
+ARG N8N_VERSION=2.48.4-secfix.1
+ENV NODE_ENV=production \
+    N8N_RELEASE_TYPE=stable \
+    N8N_PORT=5678 \
+    NODE_ICU_DATA=/usr/local/lib/node_modules/full-icu
+
+RUN apk add --no-cache \
+    ca-certificates \
+    tzdata \
+    tini \
+    git \
+    openssh-client \
+    graphicsmagick \
+    python3 \
+    make \
+    g++
+
+WORKDIR /usr/local/lib/node_modules/n8n
+
+# Copy pre-built pruned production bundle
+COPY compiled/ ./
+
+# Rebuild native bindings for Alpine Linux (sqlite3, isolated-vm, etc.)
+RUN npm rebuild sqlite3 2>/dev/null || true && \
+    chmod +x /usr/local/lib/node_modules/n8n/bin/n8n && \
+    ln -sf /usr/local/lib/node_modules/n8n/bin/n8n /usr/local/bin/n8n && \
+    apk del python3 make g++ && \
+    mkdir -p /home/node/.n8n && \
+    chown -R node:node /home/node/.n8n /usr/local/lib/node_modules/n8n
+
+USER node
+WORKDIR /home/node
+
+EXPOSE 5678
+
+ENTRYPOINT ["tini", "--"]
+CMD ["n8n", "start"]
